@@ -40,6 +40,7 @@ type Service struct {
 	repo IRepository
 }
 
+// CreateConsignment
 func (s *Service) CreateConsignment(ctx context.Context, request *pb.Consignment) (*pb.Response, error) {
 	consignment, err := s.repo.Create(request)
 
@@ -50,7 +51,8 @@ func (s *Service) CreateConsignment(ctx context.Context, request *pb.Consignment
 	return &pb.Response{Created: true, Consignment: consignment}, nil
 }
 
-func (s *Service) GetConsignment(ctx context.Context) (*pb.Response, error) {
+// GetConsignment
+func (s *Service) GetConsignment(ctx context.Context, request *pb.GetRequest) (*pb.Response, error) {
 	consignments := s.repo.GetAll()
 
 	return &pb.Response{Consignments: consignments}, nil
