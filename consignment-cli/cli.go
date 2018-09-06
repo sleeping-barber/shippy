@@ -18,6 +18,7 @@ const (
 	defaultFilename = "consignment.json"
 )
 
+// parseFile parses a filepath and gives the file back to the caller
 func parseFile(file string) (*pb.Consignment, error) {
 	var consignment *pb.Consignment
 
@@ -57,8 +58,18 @@ func main() {
 	r, err := client.CreateConsignment(context.Background(), consignment)
 
 	if err != nil {
-		log.Fatalf("Could not greet: %v", err)
+		log.Fatalf("Could not create: %v", err)
 	}
 
-	log.Printf("Created: %t, Consignment: %t", r.Created, r.Consignment)
+	log.Printf("Created: %t", r.Created)
+
+	consignments, err := client.GetConsignment(context.Background(), &pb.GetRequest{})
+
+	if err != nil {
+		log.Fatalf("Could not get consignments: %v", err)
+	}
+
+	for _, v := range consignments.Consignments {
+		log.Printf("Consignment: %v", v)
+	}
 }

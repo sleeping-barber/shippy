@@ -20,27 +20,29 @@ type IRepository interface {
 	GetAll() []*pb.Consignment
 }
 
-// Dummy repository implementation
+// Repository holds all consignments
 type Repository struct {
 	consignement []*pb.Consignment
 }
 
+// Create creates a new consignment and adds it to the repo
 func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, error) {
 	updated := append(repo.consignement, consignment)
 	repo.consignement = updated
 	return consignment, nil
 }
 
+// GetAll returns all current consignments
 func (repo *Repository) GetAll() []*pb.Consignment {
 	return repo.consignement
 }
 
-// Service satisfy all methods from the proto interface
+// Service satisfy the proto interface
 type Service struct {
 	repo IRepository
 }
 
-// CreateConsignment
+// CreateConsignment creates a new consignment
 func (s *Service) CreateConsignment(ctx context.Context, request *pb.Consignment) (*pb.Response, error) {
 	consignment, err := s.repo.Create(request)
 
@@ -51,7 +53,7 @@ func (s *Service) CreateConsignment(ctx context.Context, request *pb.Consignment
 	return &pb.Response{Created: true, Consignment: consignment}, nil
 }
 
-// GetConsignment
+// GetConsignment gets all consignments
 func (s *Service) GetConsignment(ctx context.Context, request *pb.GetRequest) (*pb.Response, error) {
 	consignments := s.repo.GetAll()
 
@@ -59,7 +61,6 @@ func (s *Service) GetConsignment(ctx context.Context, request *pb.GetRequest) (*
 }
 
 func main() {
-
 	repo := &Repository{}
 
 	listen, err := net.Listen("tcp", ":50051")
