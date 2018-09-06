@@ -17,6 +17,7 @@ const (
 
 type IRepository interface {
 	Create(*pb.Consignment) (*pb.Consignment, error)
+	GetAll() []*pb.Consignment
 }
 
 // Dummy repository implementation
@@ -28,6 +29,10 @@ func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, er
 	updated := append(repo.consignement, consignment)
 	repo.consignement = updated
 	return consignment, nil
+}
+
+func (repo *Repository) GetAll() []*pb.Consignment {
+	return repo.consignement
 }
 
 // Service satisfy all methods from the proto interface
@@ -43,6 +48,12 @@ func (s *Service) CreateConsignment(ctx context.Context, request *pb.Consignment
 	}
 
 	return &pb.Response{Created: true, Consignment: consignment}, nil
+}
+
+func (s *Service) GetConsignment(ctx context.Context) (*pb.Response, error) {
+	consignments := s.repo.GetAll()
+
+	return &pb.Response{Consignments: consignments}, nil
 }
 
 func main() {
